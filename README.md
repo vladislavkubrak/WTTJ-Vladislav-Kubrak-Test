@@ -1,5 +1,34 @@
 # Technical Test for Frontend Developer - Application Tracking System
 
+> **Job search — three documents come with it.**
+>
+> - **[NOTES.md](NOTES.md)** — the decisions and their trade-offs, the bugs the
+>   feature surfaced, what I left out and why, and how LLMs were used.
+> - **[CHECKLIST.md](CHECKLIST.md)** — your evaluation criteria, each with
+>   where to look, including the boxes I did not tick.
+> - **[WELCOME-UI-FINDINGS.md](WELCOME-UI-FINDINGS.md)** — sixteen defects
+>   building on welcome-ui turned up, each with a reproduction.
+>
+> CI runs the same gates on every push, end-to-end included:
+> `.github/workflows/ci.yml`.
+>
+> **On the assistant.** This was built with Claude Code, and the configuration
+> that shaped it is in the repository rather than described after the fact:
+> `CLAUDE.md` for the conventions it had to follow, `.claude/rules/` for the
+> path-scoped ones, `.claude/skills/` for the two jobs worth writing down, and
+> `.claude/hooks/` for the two things that should never depend on remembering.
+> NOTES.md, "On tooling", says what that changed and what it did not.
+>
+> To run the end-to-end suite yourself, with the database seeded
+> (`mix ecto.setup`):
+>
+> ```bash
+> cd frontend && yarn test:e2e
+> ```
+>
+> It downloads Chromium on first run and starts both servers itself.
+
+
 Welcome to the Frontend Developer Job Application Tracking System!
 
 This application is a simplified job board.
