@@ -31,8 +31,7 @@ defmodule AtsWeb.Api.ApplyControllerTest do
     test "refuses an address that is not an address", %{conn: conn} do
       job = job_fixture()
 
-      conn =
-        post(conn, ~p"/api/jobs/#{job.id}/apply", apply: %{@create_attrs | email: "nope"})
+      conn = post(conn, ~p"/api/jobs/#{job.id}/apply", apply: %{@create_attrs | email: "nope"})
 
       # The form guards this too, but the endpoint takes JSON: without the
       # changeset rule, "nope" is a stored email address.
