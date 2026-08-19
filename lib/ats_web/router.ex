@@ -24,6 +24,8 @@ defmodule AtsWeb.Router do
 
     # Public routes
     get "/jobs", JobController, :index
+    # Declared before "/jobs/:id" so the literal segment wins the match.
+    get "/jobs/filters", JobController, :filters
     get "/jobs/:id", JobController, :show
     post "/jobs/:job_id/apply", ApplyController, :create
 

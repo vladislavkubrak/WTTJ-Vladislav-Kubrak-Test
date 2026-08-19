@@ -2,9 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- The starter pointed at /vite.svg, and there is no public directory, so
+         every load asked for an icon and was handed the SPA fallback: index.html
+         with a 200 and a text/html type. A tab showing the generic globe, and a
+         whole document downloaded to do it. These are the marks the product
+         itself serves, at the two sizes it serves them. -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta
+      name="description"
+      content="Search jobs at Welcome to the Jungle by title, office, contract type and work mode."
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>technical-test-frontend-main</title>
+    <title>Jobs — Welcome to the Jungle</title>
+
+    <!-- welcome-ui's theme pulls fonts from two other origins, and neither
+         connection can start until 164kB of CSS has downloaded and parsed.
+         These open the sockets in parallel with it. No preload: that would
+         compete for bandwidth with the critical path. -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.welcome-ui.com" crossorigin />
   </head>
   <body>
     <div id="root"></div>

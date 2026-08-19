@@ -144,7 +144,15 @@ defmodule Ats.Applicants do
         {:ok, %{candidate: candidate, applicant: applicant}} ->
           {:ok, %{candidate: candidate, applicant: applicant}}
 
-        {:error, _} ->
+        # `Repo.transaction` on a failed Multi answers with four elements, not
+        # two, so the previous `{:error, _}` never matched and any failed
+        # insert raised CaseClauseError — a 500 where the caller had earned a
+        # 422. The failing step's own changeset is returned, so the response
+        # names the field that was rejected.
+        {:error, _step, %Ecto.Changeset{} = failed, _changes} ->
+          {:error, %{failed | action: :insert}}
+
+        {:error, _step, _reason, _changes} ->
           {:error, changeset}
       end
     else

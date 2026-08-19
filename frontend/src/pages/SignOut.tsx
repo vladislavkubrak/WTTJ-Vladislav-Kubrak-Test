@@ -9,7 +9,10 @@ export const SignOut = () => {
     const handleSignOut = async () => {
       try {
         await logout();
-      } catch (e) {}
+      } catch {
+        // The cookie is cleared either way, so a failed round trip still
+        // signs this browser out. Nothing here is worth blocking on.
+      }
       navigate("/signin", { replace: true });
     };
 

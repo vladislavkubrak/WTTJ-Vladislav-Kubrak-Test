@@ -4,8 +4,11 @@ import { Card } from "welcome-ui/Card";
 import { Link } from "react-router-dom";
 import { useSignIn } from "../components/SigninForm/useSignIn";
 import { SignInFormValues, SignInForm } from "../components/SigninForm";
+import { useDocumentTitle } from "../useDocumentTitle";
 
 export const SignIn = () => {
+  useDocumentTitle("Sign in");
+
   const { signIn, loading, error } = useSignIn();
 
   const onSubmit = async (values: SignInFormValues) => {
@@ -24,7 +27,7 @@ export const SignIn = () => {
       </WUILink>
       <Card>
         <Card.Body>
-          <Text variant="heading-xl" className="mb-lg">
+          <Text as="h1" variant="heading-xl" className="mb-lg">
             Sign in
           </Text>
           <SignInForm

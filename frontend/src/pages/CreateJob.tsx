@@ -3,12 +3,13 @@ import { Button } from "welcome-ui/Button";
 import { Text } from "welcome-ui/Text";
 import { InputText } from "welcome-ui/InputText";
 import { Textarea } from "welcome-ui/Textarea";
-import { Select } from "welcome-ui/Select";
+import { Select } from "../components/Select";
 import { Field } from "welcome-ui/Field";
 import { Card } from "welcome-ui/Card";
 import { Hint } from "welcome-ui/Hint";
 import { Link as WUILink } from "welcome-ui/Link";
 import { useState, FormEvent } from "react";
+import { useDocumentTitle } from "../useDocumentTitle";
 
 const CONTRACT_TYPE_OPTIONS = [
   { label: "Full Time", value: "FULL_TIME" },
@@ -35,6 +36,8 @@ const WORK_MODE_OPTIONS = [
 ];
 
 export const CreateJob = () => {
+  useDocumentTitle("New job");
+
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -78,7 +81,7 @@ export const CreateJob = () => {
   };
 
   return (
-    <div className="p-xl max-w-1200 my-0 mx-auto">
+    <div className="p-xl max-w-894 my-0 mx-auto">
       <WUILink
         as={Link}
         to="/"
@@ -88,7 +91,7 @@ export const CreateJob = () => {
         ← Back to jobs
       </WUILink>
 
-      <Text variant="heading-xl" className="mb-lg">
+      <Text as="h1" variant="heading-xl" className="mb-lg">
         Create New Job
       </Text>
 
@@ -120,6 +123,7 @@ export const CreateJob = () => {
             <Field label="Contract Type" required className="mb-md">
               <Select
                 name="contract_type"
+                aria-label="Contract type"
                 value={contractType}
                 options={CONTRACT_TYPE_OPTIONS}
                 onChange={(value) => setContractType(String(value))}
@@ -138,6 +142,7 @@ export const CreateJob = () => {
             <Field label="Status" className="mb-md">
               <Select
                 name="status"
+                aria-label="Status"
                 value={status}
                 options={STATUS_OPTIONS}
                 onChange={(value) => setStatus(String(value))}
@@ -147,6 +152,7 @@ export const CreateJob = () => {
             <Field label="Work Mode" className="mb-md">
               <Select
                 name="work_mode"
+                aria-label="Work mode"
                 value={workMode}
                 options={WORK_MODE_OPTIONS}
                 onChange={(value) => setWorkMode(String(value))}
