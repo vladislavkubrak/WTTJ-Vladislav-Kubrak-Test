@@ -28,6 +28,18 @@ defmodule AtsWeb.Api.ApplyControllerTest do
       assert id == job.id
     end
 
+    test "refuses an address that is not an address", %{conn: conn} do
+      job = job_fixture()
+
+      conn =
+        post(conn, ~p"/api/jobs/#{job.id}/apply", apply: %{@create_attrs | email: "nope"})
+
+      # The form guards this too, but the endpoint takes JSON: without the
+      # changeset rule, "nope" is a stored email address.
+      assert %{"email" => [message | _]} = json_response(conn, 422)["errors"]
+      assert message =~ "valid email"
+    end
+
     test "returns 422 and errors when data is invalid", %{conn: conn} do
       job = job_fixture()
       conn = post(conn, ~p"/api/jobs/#{job.id}/apply", apply: @invalid_attrs)

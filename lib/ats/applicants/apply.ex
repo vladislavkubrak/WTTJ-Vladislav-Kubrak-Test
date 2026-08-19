@@ -41,6 +41,19 @@ defmodule Ats.Applicants.Apply do
       :salary_expectation,
       :job_id
     ])
+    # Validated here rather than on Candidate, because this schema is the
+    # boundary this endpoint validates against: a rule here answers 422 with
+    # the offending field, while the same rule on the domain schema fails at
+    # insert time and takes a different path out.
+    #
+    # Deliberately not RFC 5322 — it catches the class of typo that matters,
+    # no @, no domain, no dot, and leaves the rest to the confirmation email.
+    |> validate_format(:email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+      message: "must be a valid email address"
+    )
+    |> validate_number(:salary_expectation, greater_than: 0)
+    |> validate_length(:full_name, min: 2, max: 100)
+    |> validate_length(:last_known_job, max: 120)
   end
 
   @doc """
