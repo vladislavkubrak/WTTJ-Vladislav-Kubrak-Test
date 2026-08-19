@@ -14,7 +14,7 @@ export const useApply = () => {
       try {
         await apply(jobId, params);
         navigate("/", { replace: true });
-      } catch (err: any) {
+      } catch (err: unknown) {
         setError("Unknown error");
         throw err;
       } finally {

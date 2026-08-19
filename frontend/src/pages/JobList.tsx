@@ -21,7 +21,11 @@ export const JobList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hasBearerToken, setHasBearerToken] = useState<boolean>(false);
+  // Read during the first render, not from an effect: a cookie is synchronous,
+  // and setting it afterwards means the first paint claims nobody is signed in.
+  const [hasBearerToken, setHasBearerToken] = useState<boolean>(() =>
+    Boolean(Cookies.get("user-token")),
+  );
   const [user, setUser] = useState<{ id: string; email: string } | null>(null);
   const navigate = useNavigate();
 
@@ -41,7 +45,6 @@ export const JobList = () => {
   useEffect(() => {
     const csrfToken = Cookies.get("technical-test-csrf-token");
     const bearerToken = Cookies.get("user-token");
-    setHasBearerToken(Boolean(bearerToken));
 
     if (bearerToken) {
       (async () => {
@@ -61,7 +64,7 @@ export const JobList = () => {
           } else {
             setUser(null);
           }
-        } catch (e) {
+        } catch {
           setUser(null);
         }
       })();
@@ -87,7 +90,9 @@ export const JobList = () => {
                   onClick={async () => {
                     try {
                       await logout();
-                    } catch (e) {}
+                    } catch {
+                      // Clearing the session locally matters more than the round trip.
+                    }
                     setUser(null);
                     setHasBearerToken(false);
                     navigate("/signin");
