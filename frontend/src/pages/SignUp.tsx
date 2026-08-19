@@ -4,8 +4,11 @@ import { Card } from "welcome-ui/Card";
 import { Link } from "react-router-dom";
 import { SignUpForm, SignUpFormValues } from "../components/SignupForm";
 import { useSignup } from "../components/SignupForm/useSignup";
+import { useDocumentTitle } from "../useDocumentTitle";
 
 export const SignUp = () => {
+  useDocumentTitle("Sign up");
+
   const { signup, loading, error } = useSignup();
 
   const onSubmit = async (values: SignUpFormValues) => {
@@ -24,7 +27,7 @@ export const SignUp = () => {
       </WUILink>
       <Card>
         <Card.Body>
-          <Text variant="heading-xl" className="mb-lg">
+          <Text as="h1" variant="heading-xl" className="mb-lg">
             Create account
           </Text>
           <SignUpForm
