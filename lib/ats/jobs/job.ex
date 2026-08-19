@@ -36,8 +36,13 @@ defmodule Ats.Jobs.Job do
       :office,
       :contract_type,
       :status,
-      :work_mode
+      :work_mode,
+      # Was missing, so a job created through the API could never be given a
+      # profession: the seeds set it by inserting the struct directly, and
+      # every other route silently dropped it.
+      :profession_id
     ])
+    |> foreign_key_constraint(:profession_id)
     |> validate_required([:title, :office, :contract_type])
   end
 end
