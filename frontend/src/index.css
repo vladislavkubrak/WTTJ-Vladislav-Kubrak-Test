@@ -1,3 +1,123 @@
 @import "tailwindcss";
 
 @import "welcome-ui/theme.css";
+
+/*
+ * welcome-ui ships control borders at #f3f3f3, which is 1.07:1 against white —
+ * effectively invisible, so the form reads as floating text. Focus is worse:
+ * the components drop the outline and only swap the 1px border to a yellow,
+ * a 1.17:1 state change where WCAG asks for 3:1.
+ *
+ * #dedede is the border colour measured on the live welcometothejungle.com.
+ *
+ * Two focus tokens, not one: InputText reads --input-color-border-focused
+ * while Select reads --input-color-border-active, and three of the four
+ * controls on this form are Selects.
+ *
+ * Unlayered on purpose. The defaults live in `@layer theme`, so an unlayered
+ * rule wins on cascade order without reaching for !important.
+ */
+:root {
+  --input-color-border-default: var(--color-border-neutral-subtlest);
+  --input-color-border-hover: var(--color-border-neutral-subtle);
+  --input-color-border-focused: var(--color-border-neutral-primary);
+  --input-color-border-active: var(--color-border-neutral-primary);
+
+  /*
+   * Cards have the same problem: #f6f3ef on white is 1.11:1, so every card in
+   * the app dissolved into the page. The stock hover colour is *lighter* than
+   * the replacement, which would make the edge fade on hover, so it moves too.
+   * Set here rather than per component so every Card is consistent, including
+   * the ones on the sign-in, apply and create-job screens.
+   */
+  --card-color-border-default: var(--color-border-neutral-subtlest);
+  --card-color-border-hover: var(--color-border-neutral-subtle);
+
+  /*
+   * Placeholders ship at #989898, which is 2.88:1 on white where WCAG 1.4.3
+   * asks 4.5:1 for text. It is text: "Job title or keyword" is the only thing
+   * on screen that says what the search box is for, since its label is hidden.
+   * #585858 is 7.11:1 and still reads as a prompt rather than as a value.
+   */
+  --input-color-text-placeholder: var(--color-text-neutral-subtle);
+}
+
+/*
+ * welcome-ui replaces Tailwind's default theme rather than extending it, which
+ * removes the whole `animate-*` family — `animate-pulse` compiles to nothing.
+ * The skeleton needs one animation, so it is defined here rather than pulled
+ * back in wholesale.
+ */
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.skeleton-bar {
+  animation: skeleton-pulse 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-bar {
+    animation: none;
+  }
+}
+
+/*
+ * A multi-select whose trigger reads "2 selected" is showing a value, not a
+ * prompt, but welcome-ui paints it in the placeholder grey, so an applied
+ * filter reads as an empty one.
+ *
+ * The text is not a text node: welcome-ui's multi-select renders no input at
+ * all and puts the placeholder in an `::after` pseudo-element on its root, so
+ * that is what has to be recoloured.
+ */
+.filter-has-value::after {
+  color: var(--color-text-neutral-primary);
+  opacity: 1;
+}
+
+/*
+ * welcome-ui leaves the select's box at the default cursor and only makes the
+ * caret look clickable, so most of a control that opens on click does not look
+ * like it opens on click.
+ */
+[role="combobox"],
+[role="combobox"] * {
+  cursor: pointer;
+}
+
+/*
+ * welcome-ui caps its select menu at a hardcoded 9.6875rem — not a token, so
+ * a consumer cannot adjust it without this. At 44px a row that is three and a
+ * half options: half the contract types are behind a scroll, and the row cut
+ * across the bottom edge reads as a rendering fault rather than an
+ * affordance. Eight rows shows every list this app has.
+ */
+[role="listbox"] {
+  max-height: 22rem;
+}
+
+/*
+ * One focus ring, for everything, and one that can actually be seen.
+ *
+ * welcome-ui signals focus two different ways and neither passes. Buttons get
+ * a 4px outline in #ffe166, which is 1.30:1 against white where WCAG 2.2
+ * SC 1.4.11 asks for 3:1. Inputs and selects get no outline at all — the
+ * component clears it — and rely on a 1px border changing colour, which is
+ * below the 2px perimeter SC 2.4.11 describes and is the whole signal on the
+ * five controls this page is built around.
+ *
+ * `:focus-visible` rather than `:focus`, so a mouse user clicking a button
+ * does not get a ring they did not ask for. The offset keeps it clear of the
+ * control's own border instead of merging with it.
+ */
+:focus-visible {
+  outline: 2px solid var(--color-border-neutral-primary);
+  outline-offset: 2px;
+}
