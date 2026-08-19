@@ -58,9 +58,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .tool-versions
-          cache: yarn
-          cache-dependency-path: frontend/yarn.lock
 
+      - run: corepack enable
       - run: yarn install --frozen-lockfile
 
       # Typecheck separately: `vite build` does not run tsc, so a type error
@@ -98,13 +97,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .tool-versions
-          cache: yarn
-          cache-dependency-path: frontend/yarn.lock
 
       - run: mix deps.get
       # The suite reads the seeded database, so it has to exist first.
       - run: mix ecto.setup
 
+      - run: corepack enable
       - run: yarn install --frozen-lockfile
         working-directory: frontend
 
