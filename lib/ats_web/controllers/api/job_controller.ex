@@ -6,13 +6,43 @@ defmodule AtsWeb.Api.JobController do
 
   action_fallback AtsWeb.FallbackController
 
+  # Only these reach the context. Anything else in the query string is dropped
+  # here rather than deeper down, so the context never has to defend itself
+  # against keys the HTTP layer invented.
+  @search_params ~w(q office contract_type work_mode sort page page_size)
+
   @doc """
-  List all jobs.
+  Searches published jobs.
+
+  Accepts `q`, `office`, `contract_type`, `work_mode`, `page` and `page_size`
+  as query parameters. Unknown parameters are ignored, unknown filter values
+  yield an empty page, and the response always carries pagination metadata.
   """
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def index(conn, _params) do
-    jobs = Jobs.list_jobs()
-    render(conn, :index, jobs: jobs)
+  def index(conn, params) do
+    page =
+      params
+      |> Map.take(@search_params)
+      |> Jobs.search_jobs()
+
+    render(conn, :index, page: page)
+  end
+
+  @doc """
+  Returns the values the client can filter on.
+
+  Offices come from the data, so the dropdown can never offer a location with
+  no published jobs. Contract types and work modes come from the schema, so
+  they cannot drift from what the database will actually accept.
+  """
+  @spec filters(Plug.Conn.t(), map()) :: Plug.Conn.t()
+  def filters(conn, _params) do
+    render(conn, :filters,
+      offices: Jobs.list_offices(),
+      contract_types: Jobs.contract_type_options(),
+      work_modes: Jobs.work_mode_options(),
+      sorts: Jobs.sort_options()
+    )
   end
 
   @doc """
